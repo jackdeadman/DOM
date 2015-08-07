@@ -7,6 +7,8 @@ var DOM = (function () {
 			this.elements = selector;
 		} else if (selector === document) {
 			this.elements = [document];
+		} else if (selector.nodeType) {
+			this.elements = [selector];
 		} else {
 			this.elements = toArray((context || document).querySelectorAll(selector));
 		}
