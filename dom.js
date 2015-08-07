@@ -45,7 +45,6 @@ var DOM = (function () {
 	fn.find = function (selector) {
 		var elements = [];
 		this.each(function (el) {
-			console.log(toArray(el.querySelectorAll(selector)));
 			elements = elements.concat(toArray(el.querySelectorAll(selector)));
 		});
 		return new DOM(elements);
