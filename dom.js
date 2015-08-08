@@ -165,3 +165,90 @@ var DOM = (function () {
 
 })();
 
+(function(DOM) {
+	
+	var templateDelimiter = "{{ }}"; 
+	
+	DOM.encodeObject = function (object) {
+		var str = "";
+		var keys = Object.keys(object);
+		for (var i=0; i<keys.length; ++i) {
+			var key = keys[i];
+			var value = object[key];
+			
+			str += key;
+			str += '=';
+			str += value;
+			str += '&';
+		}
+		return str.slice(0, str.length-1);
+	};
+	
+	DOM.renderTemplate = function(str, object) {
+		var delims = templateDelimiter.split(' ');
+		var keys = Object.keys(object);
+		
+		for (var i=0; i<keys.length; ++i) {
+			var key = keys[i];
+			var value = object[key];
+			var regx = new RegExp(delims[0]+'\s*'+key+'\s*'+delims[1],'g');
+			str = str.replace(regx, value);
+		}
+		return str;
+	};
+	
+	/**
+	 * Xhr
+	 */	
+	DOM.xhr = function (options) {
+		
+		var defaults = {
+			data: {},
+			type: 'json',
+			method: "GET",
+			success: function(){},
+			error: function(){},
+			async: true
+		};
+		
+		var src = options.src;
+		var data = options.data || defaults.data;
+		var type = options.type || defaults.type;
+		var success = options.success || defaults.success;
+		var error = options.success || defaults.success;
+		var async = options.async || defaults.async;
+		var method = options.method || defaults.method;
+		
+		var xmlhttp;
+		if (window.XMLHttpRequest) {
+			xmlhttp = new XMLHttpRequest();
+		} else {
+			xmlhttp = new ActiveXObject('Microsoft.XMLHTTP');
+		}
+		
+		xmlhttp.onreadystatechange = function() {
+			if (xmlhttp.readyState == XMLHttpRequest.DONE ) {
+				if (xmlhttp.status == 200) {
+					var text = type === 'json'
+						? JSON.parse(xmlhttp.responseText)
+						: xmlhttp.responseText;
+					success.call(this, text);
+				} else {
+					error.call(this, xmlhttp.status);
+				}
+			}
+		}
+		
+		if (method === 'GET') {
+			xmlhttp.open('GET', src, async);	
+		} else {
+			xmlhttp.open(method, src, async);
+			xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+			xmlhttp.send(DOM.encodeObject(data));
+		}
+
+		xmlhttp.send();
+		
+	}
+})(DOM);
+
