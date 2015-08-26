@@ -3,7 +3,9 @@ var DOM = (function () {
 	// Constructor
 	function DOM(selector, context) {
 
-		if (selector instanceof Array) {
+		if (selector === undefined) {
+			this.elements = [];	
+		} else if (selector instanceof Array) {
 			this.elements = selector;
 		} else if (selector === document) {
 			this.elements = [document];
@@ -51,7 +53,25 @@ var DOM = (function () {
 		});
 		return new DOM(elements);
 	}
+		
+	fn.first = function() {
+		return this.elements[0];
+	}
 	
+	fn.parent = function(selector) {
+		
+		var all = toArray(document.querySelectorAll(selector));
+		var current = this.first();
+		
+		while (!~all.indexOf(current.parentNode)) {
+			current = current.parentNode;
+			if (current === document) return new DOM();
+		}
+		
+		return new DOM(current);
+		
+	}
+		
 	/**
 	 * DOM Manipulation
 	 */
