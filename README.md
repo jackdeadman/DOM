@@ -1,5 +1,5 @@
 # DOM
-Lightweight dom abstraction library, because sometime jQuery is just overkill. This library provides methods for the most common DOM tasks.
+Lightweight dom abstraction library, because sometimes jQuery is just overkill. This library provides methods for the most common DOM tasks.
 This code is also fairly simple, so could be used as learning tool. 
 
 ## Usage
